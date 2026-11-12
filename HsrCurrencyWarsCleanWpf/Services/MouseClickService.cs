@@ -7,6 +7,8 @@ namespace HsrCurrencyWarsCleanWpf.Services;
 
 public sealed class MouseClickService : IClickService
 {
+	private readonly IClickService? _macService = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? new MacVirtualHidClickService() : null;
+
 	private const int SwRestore = 9;
 
 	private const uint MouseeventfLeftdown = 2u;
@@ -27,6 +29,10 @@ public sealed class MouseClickService : IClickService
 
 	public async Task<ClickResult> ClickAsync(ClickRequest request, nint windowHandle, CancellationToken cancellationToken = default(CancellationToken))
 	{
+		if (_macService != null)
+		{
+			return await _macService.ClickAsync(request, windowHandle, cancellationToken);
+		}
 		cancellationToken.ThrowIfCancellationRequested();
 		TryActivateWindow(windowHandle);
 		await Task.Delay(120, cancellationToken);
@@ -43,6 +49,10 @@ public sealed class MouseClickService : IClickService
 
 	public async Task<ClickResult> DragAsync(DragRequest request, nint windowHandle, CancellationToken cancellationToken = default(CancellationToken))
 	{
+		if (_macService != null)
+		{
+			return await _macService.DragAsync(request, windowHandle, cancellationToken);
+		}
 		cancellationToken.ThrowIfCancellationRequested();
 		TryActivateWindow(windowHandle);
 		await Task.Delay(120, cancellationToken);
@@ -68,6 +78,10 @@ public sealed class MouseClickService : IClickService
 
 	public async Task<ClickResult> ScrollAsync(int screenX, int screenY, int wheelDelta, nint windowHandle, CancellationToken cancellationToken = default(CancellationToken))
 	{
+		if (_macService != null)
+		{
+			return await _macService.ScrollAsync(screenX, screenY, wheelDelta, windowHandle, cancellationToken);
+		}
 		cancellationToken.ThrowIfCancellationRequested();
 		TryActivateWindow(windowHandle);
 		await Task.Delay(120, cancellationToken);
@@ -82,6 +96,10 @@ public sealed class MouseClickService : IClickService
 
 	public async Task<ClickResult> PressKeyAsync(string key, nint windowHandle, CancellationToken cancellationToken = default(CancellationToken))
 	{
+		if (_macService != null)
+		{
+			return await _macService.PressKeyAsync(key, windowHandle, cancellationToken);
+		}
 		byte virtualKey;
 		string displayName;
 		if (string.Equals(key, "esc", StringComparison.OrdinalIgnoreCase) || string.Equals(key, "escape", StringComparison.OrdinalIgnoreCase))
@@ -109,6 +127,10 @@ public sealed class MouseClickService : IClickService
 
 	public async Task<ClickResult> PressAltEnterAsync(nint windowHandle, CancellationToken cancellationToken = default(CancellationToken))
 	{
+		if (_macService != null)
+		{
+			return await _macService.PressAltEnterAsync(windowHandle, cancellationToken);
+		}
 		cancellationToken.ThrowIfCancellationRequested();
 		TryActivateWindow(windowHandle);
 		await Task.Delay(120, cancellationToken);
