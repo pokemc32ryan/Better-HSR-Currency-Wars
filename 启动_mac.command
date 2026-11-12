@@ -94,8 +94,14 @@ fi
 echo "使用 Python: $PYTHON_BIN"
 cd "$PROJECT_DIR"
 
-# 4. 运行主程序
-"$PYTHON_BIN" "$PROJECT_DIR/Tools/macos/currency_wars_mac.py"
+# 4. 运行主程序（默认启动原生 GUI 介面）
+if [[ "${1:-}" == "--cli" ]]; then
+    echo "正在启动控制台交互模式..."
+    "$PYTHON_BIN" "$PROJECT_DIR/Tools/macos/currency_wars_mac.py"
+else
+    echo "正在启动 macOS 原生图形介面 (GUI)..."
+    "$PYTHON_BIN" "$PROJECT_DIR/Tools/macos/gui_app.py"
+fi
 EXIT_CODE=$?
 
 read -r -p "按 Enter 键关闭此窗口..." || true
